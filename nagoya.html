@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>名古屋5天4夜親子行程</title>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --sunny: #e67e22;
+            --rainy: #7f8c8d;
+            --bg-sunny: #fff9e6;
+            --bg-rainy: #eaeded;
+            --dark: #2c3e50;
+            --light: #f8f9fa;
+            --border: #d5dbdb;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #f4f6f7; color: var(--dark); padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; }
+        
+        .header { background: linear-gradient(135deg, var(--primary), #0f1e36); color: white; padding: 25px; }
+        .header h1 { font-size: 22px; margin-bottom: 12px; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+        .summary-card { background: rgba(255,255,255,0.08); padding: 10px; border-radius: 6px; font-size: 13px; }
+        .summary-card strong { color: #f39c12; display: block; margin-bottom: 2px; }
+
+        .mode-panel { background: #ebedef; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+        .mode-label { font-weight: bold; font-size: 15px; color: var(--primary); }
+        .mode-switch-group { display: flex; gap: 10px; }
+        .mode-btn { padding: 8px 20px; border: 2px solid transparent; border-radius: 20px; font-weight: bold; cursor: pointer; transition: all 0.2s; font-size: 14px; }
+        
+        .btn-sunny { background: white; color: #d35400; border-color: var(--sunny); }
+        .btn-sunny.active { background: var(--sunny); color: white; }
+        
+        .btn-rainy { background: white; color: #34495e; border-color: var(--rainy); }
+        .btn-rainy.active { background: var(--rainy); color: white; }
+
+        .dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px; background: #fff; border-bottom: 1px solid #eee; }
+        @media (max-width: 600px) { .dashboard { grid-template-columns: 1fr; } }
+        .kpi-card { padding: 12px; border-radius: 6px; text-align: center; background: var(--light); border: 1px solid var(--border); }
+        .kpi-card h3 { font-size: 13px; color: #7f8c8d; margin-bottom: 3px; }
+        .kpi-value { font-size: 15px; font-weight: bold; }
+
+        .tabs { display: flex; background: #cbd5e1; }
+        .tab-btn { flex: 1; padding: 12px 5px; border: none; background: none; font-weight: bold; cursor: pointer; color: var(--dark); text-align: center; font-size: 14px; }
+        .tab-btn.active { background: var(--primary); color: white; }
+
+        .content { padding: 20px; }
+        .timeline { position: relative; padding-left: 20px; border-left: 2px solid #e5e8e8; }
+        .timeline-item { position: relative; margin-bottom: 25px; }
+        .timeline-item::before { content: ''; position: absolute; left: -26px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--primary); border: 2px solid white; }
+        .timeline-time { font-weight: bold; color: var(--primary); font-size: 13px; }
+        .timeline-title { font-weight: bold; font-size: 15px; margin: 2px 0; }
+        .timeline-desc { font-size: 13.5px; color: #2c3e50; padding: 10px; border-radius: 4px; }
+        
+        .bg-sunny-desc { background-color: var(--bg-sunny); border-left: 3px solid var(--sunny); }
+        .bg-rainy-desc { background-color: var(--bg-rainy); border-left: 3px solid var(--rainy); }
+
+        .note-box { margin-top: 15px; padding: 12px; border-radius: 6px; font-size: 13.5px; background: #fff; border: 1px dashed #7f8c8d; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>✈️ 名古屋 5天4夜 親子行程控制台【營業時間內嵌優化版】</h1>
+        <div class="summary-grid">
+            <div class="summary-card"><strong>🛫 去程：JX838</strong> 6/18(四) 14:55 TPE ➔ 18:45 NGO (T1)</div>
+            <div class="summary-card"><strong>🛬 回程：JX839</strong> 6/22(一) 19:55 NGO ➔ 22:00 TPE (T1)</div>
+            <div class="summary-card"><strong>🏨 住宿大本營</strong> 納屋橋里士滿飯店 (31㎡ 豪華大空間)</div>
+        </div>
+    </div>
+
+    <!-- 天氣切換 -->
+    <div class="mode-panel">
+        <div class="mode-label">📊 當前天氣實時模擬：</div>
+        <div class="mode-switch-group">
+            <button class="mode-btn btn-sunny active" onclick="setWeather('sunny')">☀️ 今日大晴天</button>
+            <button class="mode-btn btn-rainy" onclick="setWeather('rainy')">🌧️ 今日下大雨</button>
+        </div>
+    </div>
+
+    <!-- 看板 -->
+    <div class="dashboard">
+        <div class="kpi-card"><h3>🚶 全家預估日步數</h3><div class="kpi-value" id="kpi-steps">--</div></div>
+        <div class="kpi-card"><h3>🎯 今日主打景點組合</h3><div class="kpi-value" id="kpi-transport" style="color:var(--primary);">--</div></div>
+        <div class="kpi-card"><h3>⚠️ 現場應變與防禦指引</h3><div class="kpi-value" id="kpi-defense">--</div></div>
+    </div>
+
+    <!-- 天數切換 -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchDay(1)">D1 (6/18)</button>
+        <button class="tab-btn" onclick="switchDay(2)">D2 (6/19)</button>
+        <button class="tab-btn" onclick="switchDay(3)">D3 (6/20)</button>
+        <button class="tab-btn" onclick="switchDay(4)">D4 (6/21)</button>
+        <button class="tab-btn" onclick="switchDay(5)">D5 (6/22)</button>
+    </div>
+
+    <div class="content">
+        <div id="note-container" class="note-box"></div>
+        <div style="margin-top: 20px;" id="timeline-container" class="timeline"></div>
+    </div>
+</div>
+
+<script>
+    let currentDay = 1;
+    let currentWeather = 'sunny';
+
+    const data = {
+        days: {
+            1: {
+                note_sunny: "<strong>💡 晴天備忘：</strong> 下機通關預估19:30。天氣好可以拉行李散步10分鐘去飯店，當作市區探路。",
+                note_rainy: "<strong>💡 雨天避雷：</strong> 車站至飯店無遮蔽。大雨天強制在名鐵車站內吃完飯，直接叫計程車5分鐘送進飯店，省力100%。",
+                sunny: { steps: "7,000 步", transport: "μ-SKY 特急 ＋ 站前散步", defense: "無須刪除景點", timeline: [
+                    { time: "14:55", title: "桃園機場起飛", desc: "搭乘星宇航空 JX838 開啟旅程。" },
+                    { time: "18:45", title: "抵達中部國際機場 T1", desc: "通關辦理，預計 19:30 完成。依循指標前往機場電車站。" },
+                    { time: "20:07", title: "搭乘 μ-SKY 特急列車", desc: "28分鐘極速直達名鐵名古屋站。" },
+                    { time: "20:45", title: "名古屋站 ➔ 飯店散策", desc: "天氣優良，全家推行李沿廣小路通散步 10 分鐘，抵達納屋橋里士滿飯店。" },
+                    { time: "21:00", title: "進駐 31㎡ 大房間", desc: "辦理入住，大空間便於整理行李與舒適休息。" }
+                ]},
+                rainy: { steps: "4,500 步", transport: "μ-SKY ＋ 避雨計程車", defense: "取消地面拉行李步行", timeline: [
+                    { time: "14:55", title: "桃園機場起飛", desc: "搭乘星宇航空 JX838。" },
+                    { time: "18:45", title: "抵達中部國際機場 T1", desc: "大雨天走機場室內通道進電車站。" },
+                    { time: "20:07", title: "搭乘 μ-SKY 特急列車", desc: "28分鐘直達名古屋站，全程不出大樓。" },
+                    { time: "20:45", title: "大雨無縫避雨動線", desc: "直接在車站叫計程車，5分鐘把大行李箱和孩子送抵飯店門口（車資約800日圓）。" },
+                    { time: "21:00", title: "1 樓 Royal Host 避難", desc: "辦理入住。不出大門，直接在1樓享用精緻晚餐（營業時間至晚間深夜），隨後回房。" }
+                ]}
+            },
+            2: {
+                note_sunny: "<strong>💡 晴天備忘（名站北側黃金同盟）：</strong> 豐田紀念館先去，隨後散步穿過則武之森綠地，直接進入永旺夢樂城購物。整條路線是一條平地直線，完全順路不折騰！",
+                note_rainy: "<strong>💡 雨天避雷：</strong> 豐田館與 AEON 為全室內完全免疫。下雨天僅需**放棄則武之森的戶外花園**。上午逛完豐田館後，直接用計程車2分鐘無縫平移到 AEON 室內購物與晚餐。",
+                sunny: { steps: "11,000 步", transport: "豐田紀念館 ➔ 則武之森 ➔ 永旺夢樂城", defense: "名站北側完美直線動線，最省腳力", timeline: [
+                    { time: "09:00", title: "第一站：豐田產業技術紀念館 (先去)", desc: "【⏱️ 營業時間：09:30 - 17:00 / 最後入館 16:30】<br>搭地鐵或計程車前往。全室內大型展示，欣賞紅磚老建築、豐富的汽車組裝線與互動兒童科技樂園。" },
+                    { time: "12:30", title: "第二站：則武之森公園 (晴天接續)", desc: "【⏱️ 營業時間：園區 09:00 - 18:00 / 工藝館 10:00 - 17:00】<br>從豐田館出來，直接步行穿過緊鄰的則武之森歐式紅磚公園，欣賞噴水池綠地，孩子可在此短暫跑跑。" },
+                    { time: "13:30", title: "第三站：永旺夢樂城 (Noritake Garden)", desc: "【⏱️ 營業時間：商場 10:00 - 21:00 / 餐廳 11:00 - 22:00】<br>直接平地走進商場。拍網美巨大書牆、採購日系服飾（UNIQLO、GU）與免稅藥妝。晚餐直接在商場內享用，隨後回飯店。" }
+                ]},
+                rainy: { steps: "8,000 步", transport: "豐田紀念館 ➔ (小黃) ➔ 永旺夢樂城室內", defense: "❌ 現場取消則武之森戶外綠地", timeline: [
+                    { time: "09:15", title: "計程車定點出發", desc: "打車直達豐田產業技術紀念館正門，完全避開雨勢。" },
+                    { time: "09:30", title: "第一站：豐田產業技術紀念館 (絕對核心)", desc: "【⏱️ 營業時間：09:30 - 17:00】<br>全室內大館。活字機械與汽車製程不受暴雨影響，孩子在科技樂園照樣開心玩樂。" },
+                    { time: "13:00", title: "無縫切換商場", desc: "大雨放棄戶外花園，搭計程車2分鐘直接送進永旺夢樂城室內，大雨免撐傘。" },
+                    { time: "13:15", title: "第二站：永旺夢樂城全室內購物", desc: "【⏱️ 營業時間：10:00 - 21:00】<br>留在室內大採購、吃午餐。帶孩子去二樓體驗室內星空投影劇場，大雨天完全不出大樓，晚餐亦在商場內解決。" }
+                ]}
+            },
+            3: {
+                note_sunny: "<strong>💡 晴天大眾運輸指引（南邊港區同盟）：</strong> 今日全程利用公車與電車，兼顧經濟與在地體驗。中午跨區移動需回車站轉乘地鐵，晴天步行體感良好，跟隨車站顏色指標移動即可。",
+                note_rainy: "<strong>💡 雨天避雷：</strong> 下午港區跨區移動（鐵道館➔水族館）若拉電車階梯極多且耗時，大雨天請<strong>無條件改用計程車接送（約15分鐘橫跨名港大橋）</strong>，保證孩子不淋魚感冒。",
+                sunny: { steps: "13,000 步", transport: "門口公車 ＋ 青波線 ＋ 地鐵轉乘", defense: "大眾運輸流，注意轉乘時間與孩子體力", timeline: [
+                    { time: "08:30", title: "飯店門口搭公車", desc: "出門1分鐘至「柳橋」公車站，搭乘市區公車5分鐘直達名古屋車站，省去步行耗能。" },
+                    { time: "09:00", title: "轉乘青波線火車", desc: "於名古屋站轉乘青波線，一車直達終點「金城埠頭站」（24分鐘）。" },
+                    { time: "09:30", title: "第一站：磁浮鐵道館", desc: "【⏱️ 營業時間：10:00 - 17:30 / 最後入館 17:00】<br>體驗實體磁浮列車與豐富模擬設施，中午在館內購買限量鐵路便當。" },
+                    { time: "12:45", title: "港區橫移（大眾運輸流）", desc: "搭青波線回名古屋站 ➔ 轉地鐵東山線至榮站 ➔ 轉地鐵名城線（名港線）直達「名古屋港站」。全程約55分鐘。" },
+                    { time: "13:45", title: "第二站：名古屋港水族館", desc: "【⏱️ 營業時間：09:30 - 17:30】<br>3號出口（電梯）出站，平地散步5分鐘進館。觀賞驚撼的虎鯨與海豚表演。" },
+                    { time: "17:30", title: "地鐵流返程", desc: "從名古屋港站搭名城線至榮站，轉東山線至「伏見站」。" },
+                    { time: "18:15", title: "伏見區散步晚餐", desc: "從伏見站出站，順路至飯店附近的山本屋總本家吃味噌烏龍麵，隨後慢步回飯店。" }
+                ]},
+                rainy: { steps: "7,000 步", transport: "鐵道館 ➔ (跨港計程車) ➔ 水族館室內", defense: "❌ 暴雨改用短途高效率計程車", timeline: [
+                    { time: "08:45", title: "公車避雨出發", desc: "飯店門口搭市區公車5分鐘直達車站，轉乘青波線，完全免淋雨。" },
+                    { time: "09:30", title: "第一站：磁浮鐵道館", desc: "【⏱️ 營業時間：10:00 - 17:30】<br>完全室內空調大館，大雨完全無感。" },
+                    { time: "13:00", title: "港區橫移（高效率秘密計程車）", desc: "從鐵道館直接打車橫跨名港大橋直達水族館正門（15分鐘，車資約3500日圓），免去雨天轉火車的漫長狼狽。" },
+                    { time: "13:20", title: "第二站：名古屋港水族館", desc: "【⏱️ 營業時間：09:30 - 17:30】<br>進入室內館區看海洋生物。結束後搭地鐵回伏見區，在飯店1樓 Royal Host 享用舒適晚餐。" }
+                ]}
+            },
+            4: {
+                note_sunny: "<strong>💡 晴天備忘（名城軸線同盟）：</strong> 先去市區中央的科學館，中午過後地鐵一條線往北衝，專攻名古屋城與北側緊鄰的下水道科學館，動線完全順路不重複！",
+                note_rainy: "<strong>💡 雨天避雷：</strong> ❌ <strong>強制刪除名古屋城</strong>（外面全是泥濘碎石路且天守閣封閉）。<strong>【科學館依然保留為第一站】</strong>！下午**絕對不去重複的永旺商商場**，改去鄰近的**【大須商店街（全加蓋天棚區）】**吃特色點心、逛街，體感不重複！",
+                sunny: { steps: "13,500 步", transport: "名古屋市科學館 ➔ 名古屋城 ➔ 下水道科學館", defense: "科學館先啟動，隨後一路向北順遊古城與下水道館", timeline: [
+                    { time: "09:15", title: "第一站：名古屋市科學館 (先去)", desc: "【⏱️ 營業時間：09:30 - 17:00 / 最後入館 16:30】<br>從飯店散步5-8分鐘即可抵達。參觀金氏紀錄巨大天象儀，操作豐富科學互動機關。" },
+                    { time: "12:30", title: "地鐵一路向北 ➔ 名古屋城", desc: "從地鐵伏見站搭鶴舞線至「丸之內站」轉名城線，至「名古屋城站」下車。" },
+                    { time: "13:00", title: "第二站：名古屋城", desc: "【⏱️ 營業時間：09:00 - 16:30 / 本丸御殿最後進場 16:00】<br>晴天前往。欣賞護城河、看黃金虎鯨，進入本丸御殿欣賞頂級原木與金箔壁畫。" },
+                    { time: "15:30", title: "第三站：下水道科學館 (同區域順路)", desc: "【⏱️ 營業時間：09:30 - 16:30】<br>位於名城公園北側（走路可達）。全室內免費參觀，豐富的自來水互動機關與地板大型擬真管線，非常適合孩子。" },
+                    { time: "18:00", title: "榮商圈晚餐", desc: "搭乘地鐵名城線南下直達「榮站」，在地下街或百貨享用晚餐後回飯店。" }
+                ]},
+                rainy: { steps: "8,500 步", transport: "科學館 ➔ (小黃) ➔ 大須防雨加蓋商店街", defense: "❌ 暴雨現場刪除名古屋城，且絕不重複去永旺", timeline: [
+                    { time: "09:20", title: "第一站：名古屋市科學館 (雨天頂級神陣)", desc: "【⏱️ 營業時間：09:30 - 17:00】<br>大雨天完全不影響！飯店出來慢步5分鐘（或坐車1分鐘）直接進館。在全室內狂玩六層樓的科學互動機關。" },
+                    { time: "12:30", title: "午餐時間與跨區移動", desc: "科學館旁步行或搭車至鄰近餐廳享用熱騰騰的味噌烏龍麵。" },
+                    { time: "13:30", title: "第二站：大須商店街（全加蓋防雨區 / 完美錯開商場）", desc: "【⏱️ 營業時間：各店家多為 10:00 - 20:00 依店而異】<br>搭地鐵1站或直接打車3分鐘抵達大須。直接進入<strong>全天候加蓋的巨大拱廊天棚下</strong>。帶孩子吃鯛魚燒、逛扭蛋與日本在地老街，一滴雨都淋不到，體驗不重複！" },
+                    { time: "16:00", title: "下午室內彈性備案 (下水道館 或 啤酒廠)", desc: "【下水道科學館 ⏱️ 至 16:30】/【麒麟啤酒廠 ⏱️ 依預約場次為準】<br>若還有精力，可打車前往全室內的下水道科學館或提前預約的麒麟啤酒廠避雨參觀；若孩子累了，則可提早回飯店休息。" },
+                    { time: "18:00", title: "飯店 1 樓就地晚餐", desc: "直接在飯店 1 樓 Royal Host 舒服用餐，避開外面的大暴雨。" }
+                ]}
+            },
+            5: {
+                note_sunny: "<strong>💡 最後一天黃金動線：</strong> 中午辦理退房並攜帶行李，直接搭 μ-SKY 衝往機場。因為最強的**【波音航空博物館】**就在機場內，大行李直接托運後，全家空手進去大飛機光影世界玩到登機！",
+                note_rainy: "<strong>💡 雨天備忘：</strong> 機場航廈與波音博物館全程有室內電動步道天橋相連，雨天完全免撐傘。行李直接在航廈辦理托運或寄存，防雨與舒適度高達100%。",
+                sunny: { steps: "9,500 步", transport: "μ-SKY 特急 ➔ 機場波音飛行博物館", defense: "完美利用航廈空間，大人小孩都輕鬆", timeline: [
+                    { time: "11:30", title: "飯店退房 ＆ 計程車去車站", desc: "在飯店打包完畢辦理退房，搭計程車5分鐘直達名鐵名古屋站（避開公車擠行李箱）。" },
+                    { time: "12:20", title: "搭乘 μ-SKY 特急狂飆機場", desc: "全車對號座，28分鐘直達中部國際機場 T1。" },
+                    { time: "13:00", title: "行李托運 / 寄存", desc: "抵達機場航廈。先至星宇航空櫃檯辦理行李托運，全家立刻輕裝化。" },
+                    { time: "13:30", title: "重磅亮點：Flight of Dreams 波音博物館", desc: "【⏱️ 營業時間：10:00 - 17:00 / 一樓餐飲區至 20:00】<br>位於機場內（走室內連通步道）。近距離觀賞真實波音 787 飛機、體驗室內聲光大秀。一樓設有美式風格飲食街，可在此一邊看飛機一邊享用午餐。" },
+                    { time: "17:30", title: "返回 T1 航廈 ＆ 晚餐", desc: "走回 T1 航廈 4 樓藍天城商店街，享用最後的名古屋名物（蝦餅、雞翅），隨後辦理出境，19:55 搭乘星宇航空返台。" }
+                ]},
+                rainy: { steps: "9,500 步", transport: "μ-SKY 特急 ➔ 機場波音飛行博物館", defense: "全程室內連通，100%不受雨天影響", timeline: [
+                    { time: "11:30", title: "飯店退房 ＆ 計程車去車站", desc: "外面大雨，強制搭計程車5分鐘直達車站，大行李箱一滴雨都不淋。" },
+                    { time: "12:20", title: "搭乘 μ-SKY 特急狂飆機場", desc: "大樓內直接上火車，28分鐘將全家與行李安全送抵機場車站。" },
+                    { time: "13:00", title: "行李托運 / 機場室內移防", desc: "抵達機場。辦理完行李托運後，全程走高空室內防雨聯絡天橋，前往波音博物館。" },
+                    { time: "13:30", title: "重磅亮點：Flight of Dreams 波音博物館", desc: "【⏱️ 營業時間：10:00 - 17:00】<br>完全室內巨型展機空間。不受暴雨干擾，孩子在室內看飛機燈光秀、攀爬室內遊樂設施，爸媽在室內美式商場放空。" },
+                    { time: "17:30", title: "返回 T1 航廈 ＆ 晚餐", desc: "走室內步道回 T1 航廈 4 樓，吃晚餐、買最後的免稅伴手禮，19:55 搭機回台。" }
+                ]}
+            }
+        }
+    };
+
+    function setWeather(weather) {
+        currentWeather = weather;
+        document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+        if(weather === 'sunny') document.querySelector('.btn-sunny').classList.add('active');
+        if(weather === 'rainy') document.querySelector('.btn-rainy').classList.add('active');
+        updateView();
+    }
+
+    function switchDay(dayNum) {
+        currentDay = dayNum;
+        document.querySelectorAll('.tab-btn').forEach((btn, idx) => {
+            if(idx === dayNum - 1) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+        updateView();
+    }
+
+    function updateView() {
+        const dayData = data.days[currentDay];
+        const config = dayData[currentWeather];
+
+        document.getElementById('kpi-steps').innerText = config.steps;
+        document.getElementById('kpi-transport').innerText = config.transport;
+        document.getElementById('kpi-defense').innerText = config.defense;
+        document.getElementById('note-container').innerHTML = dayData[`note_${currentWeather}`];
+
+        const container = document.getElementById('timeline-container');
+        container.innerHTML = '';
+        config.timeline.forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'timeline-item';
+            itemDiv.innerHTML = `
+                <div class="timeline-time">${item.time}</div>
+                <div class="timeline-title">${item.title}</div>
+                <div class="timeline-desc ${currentWeather === 'sunny' ? 'bg-sunny-desc' : 'bg-rainy-desc'}">${item.desc}</div>
+            `;
+            container.appendChild(itemDiv);
+        });
+    }
+
+    window.onload = function() { updateView(); };
+</script>
+
+</body>
+</html>
