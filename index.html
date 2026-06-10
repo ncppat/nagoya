@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>名古屋5天4夜親子行程</title>
+    <title>名古屋5天4夜親子行程控制台</title>
     <style>
         :root {
             --primary: #1a365d;
@@ -37,12 +37,6 @@
         .btn-rainy { background: white; color: #34495e; border-color: var(--rainy); }
         .btn-rainy.active { background: var(--rainy); color: white; }
 
-        .dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px; background: #fff; border-bottom: 1px solid #eee; }
-        @media (max-width: 600px) { .dashboard { grid-template-columns: 1fr; } }
-        .kpi-card { padding: 12px; border-radius: 6px; text-align: center; background: var(--light); border: 1px solid var(--border); }
-        .kpi-card h3 { font-size: 13px; color: #7f8c8d; margin-bottom: 3px; }
-        .kpi-value { font-size: 15px; font-weight: bold; }
-
         .tabs { display: flex; background: #cbd5e1; }
         .tab-btn { flex: 1; padding: 12px 5px; border: none; background: none; font-weight: bold; cursor: pointer; color: var(--dark); text-align: center; font-size: 14px; }
         .tab-btn.active { background: var(--primary); color: white; }
@@ -55,6 +49,7 @@
         .timeline-title { font-weight: bold; font-size: 15px; margin: 2px 0; }
         .timeline-desc { font-size: 13.5px; color: #2c3e50; padding: 10px; border-radius: 4px; }
         
+        .trans-box { margin-top: 8px; padding: 6px 10px; background: rgba(255,255,255,0.6); border-left: 3px solid #34495e; font-size: 13px; color: #34495e; }
         .bg-sunny-desc { background-color: var(--bg-sunny); border-left: 3px solid var(--sunny); }
         .bg-rainy-desc { background-color: var(--bg-rainy); border-left: 3px solid var(--rainy); }
 
@@ -65,10 +60,10 @@
 
 <div class="container">
     <div class="header">
-        <h1>✈️ 名古屋 5天4夜 親子行程控制台【營業時間內嵌優化版】</h1>
+        <h1>✈️ 名古屋 5天4夜 親子行程控制台</h1>
         <div class="summary-grid">
-            <div class="summary-card"><strong>🛫 去程：JX838</strong> 6/18(四) 14:55 TPE ➔ 18:45 NGO (T1)</div>
-            <div class="summary-card"><strong>🛬 回程：JX839</strong> 6/22(一) 19:55 NGO ➔ 22:00 TPE (T1)</div>
+            <div class="summary-card"><strong>🛫 去程：JX838</strong> 6/18(週四) 14:55 TPE ➔ 18:45 NGO (T1)</div>
+            <div class="summary-card"><strong>🛬 回程：JX839</strong> 6/22(週一) 19:55 NGO ➔ 22:00 TPE (T1)</div>
             <div class="summary-card"><strong>🏨 住宿大本營</strong> 納屋橋里士滿飯店 (31㎡ 豪華大空間)</div>
         </div>
     </div>
@@ -82,20 +77,13 @@
         </div>
     </div>
 
-    <!-- 看板 -->
-    <div class="dashboard">
-        <div class="kpi-card"><h3>🚶 全家預估日步數</h3><div class="kpi-value" id="kpi-steps">--</div></div>
-        <div class="kpi-card"><h3>🎯 今日主打景點組合</h3><div class="kpi-value" id="kpi-transport" style="color:var(--primary);">--</div></div>
-        <div class="kpi-card"><h3>⚠️ 現場應變與防禦指引</h3><div class="kpi-value" id="kpi-defense">--</div></div>
-    </div>
-
     <!-- 天數切換 -->
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchDay(1)">D1 (6/18)</button>
-        <button class="tab-btn" onclick="switchDay(2)">D2 (6/19)</button>
-        <button class="tab-btn" onclick="switchDay(3)">D3 (6/20)</button>
-        <button class="tab-btn" onclick="switchDay(4)">D4 (6/21)</button>
-        <button class="tab-btn" onclick="switchDay(5)">D5 (6/22)</button>
+        <button class="tab-btn active" onclick="switchDay(1)">D1 (6/18 週四)</button>
+        <button class="tab-btn" onclick="switchDay(2)">D2 (6/19 週五)</button>
+        <button class="tab-btn" onclick="switchDay(3)">D3 (6/20 週六)</button>
+        <button class="tab-btn" onclick="switchDay(4)">D4 (6/21 週日)</button>
+        <button class="tab-btn" onclick="switchDay(5)">D5 (6/22 週一)</button>
     </div>
 
     <div class="content">
@@ -111,91 +99,74 @@
     const data = {
         days: {
             1: {
-                note_sunny: "<strong>💡 晴天備忘：</strong> 下機通關預估19:30。天氣好可以拉行李散步10分鐘去飯店，當作市區探路。",
-                note_rainy: "<strong>💡 雨天避雷：</strong> 車站至飯店無遮蔽。大雨天強制在名鐵車站內吃完飯，直接叫計程車5分鐘送進飯店，省力100%。",
-                sunny: { steps: "7,000 步", transport: "μ-SKY 特急 ＋ 站前散步", defense: "無須刪除景點", timeline: [
-                    { time: "14:55", title: "桃園機場起飛", desc: "搭乘星宇航空 JX838 開啟旅程。" },
-                    { time: "18:45", title: "抵達中部國際機場 T1", desc: "通關辦理，預計 19:30 完成。依循指標前往機場電車站。" },
-                    { time: "20:07", title: "搭乘 μ-SKY 特急列車", desc: "28分鐘極速直達名鐵名古屋站。" },
-                    { time: "20:45", title: "名古屋站 ➔ 飯店散策", desc: "天氣優良，全家推行李沿廣小路通散步 10 分鐘，抵達納屋橋里士滿飯店。" },
-                    { time: "21:00", title: "進駐 31㎡ 大房間", desc: "辦理入住，大空間便於整理行李與舒適休息。" }
+                note_sunny: "<strong>💡 晴天備忘：</strong> 下機通關預估19:30。自名鐵名古屋站沿廣小路通步行回飯店，當作市區探路。",
+                note_rainy: "<strong>💡 雨天避雷：</strong> 車站至飯店段無遮蔽物。建議直接於名鐵車站大樓內用餐，隨後安排車輛接駁至飯店，確保隨身行李乾燥。",
+                sunny: { timeline: [
+                    { time: "14:55", title: "桃園國際機場 (第一航廈) - 出發起飛", desc: "搭乘星宇航空 JX838 航班起飛，配置 A330-900 寬體客機。", trans: "🚌 交通方式：由桃園機場起飛航空位移。" },
+                    { time: "18:45", title: "中部國際機場 (第一航廈) - 抵達通關", desc: "辦理入境手續與通關程序，預計19:30出關。", trans: "🚌 交通方式：出關後步行連通至機場電車站，搭乘 20:07 的 μ-SKY 特急列車直達名鐵名古屋站。" },
+                    { time: "21:00", title: "納屋橋里士滿飯店 - 辦理入住", desc: "【⏱️ 營業時間：24小時櫃檯辦理入住】<br>抵達飯店進房休息，分配 31㎡ 豪華大空間。", trans: "🚌 交通方式：自名鐵名古屋站沿廣小路通平地慢步 10-12 分鐘抵達飯店。" }
                 ]},
-                rainy: { steps: "4,500 步", transport: "μ-SKY ＋ 避雨計程車", defense: "取消地面拉行李步行", timeline: [
-                    { time: "14:55", title: "桃園機場起飛", desc: "搭乘星宇航空 JX838。" },
-                    { time: "18:45", title: "抵達中部國際機場 T1", desc: "大雨天走機場室內通道進電車站。" },
-                    { time: "20:07", title: "搭乘 μ-SKY 特急列車", desc: "28分鐘直達名古屋站，全程不出大樓。" },
-                    { time: "20:45", title: "大雨無縫避雨動線", desc: "直接在車站叫計程車，5分鐘把大行李箱和孩子送抵飯店門口（車資約800日圓）。" },
-                    { time: "21:00", title: "1 樓 Royal Host 避難", desc: "辦理入住。不出大門，直接在1樓享用精緻晚餐（營業時間至晚間深夜），隨後回房。" }
+                rainy: { timeline: [
+                    { time: "14:55", title: "桃園國際機場 (第一航廈) - 出發起飛", desc: "搭乘星宇航空 JX838 航班起飛。", trans: "🚌 交通方式：由桃園機場起飛航空位移。" },
+                    { time: "18:45", title: "中部國際機場 (第一航廈) - 抵達通關", desc: "辦理入境通關程序，全程不接觸室外雨勢。", trans: "🚌 交通方式：走機場全室內天橋通道前往電車站，搭乘 μ-SKY 特急列車直達名鐵名古屋站。" },
+                    { time: "21:00", title: "納屋橋里士滿飯店 - 飯店進駐", desc: "【⏱️ 營業時間：飯店 1 樓 Royal Host 餐廳營運至深夜】<br>辦理入住登記。因外頭雨勢影響，晚餐直接安排於飯店 1 樓家庭餐廳用餐。", trans: "🚌 交通方式：自名古屋站公車總站搭乘市區公車（柳橋站下車）或直接搭乘計程車 5 分鐘直達飯店大門。" }
                 ]}
             },
             2: {
-                note_sunny: "<strong>💡 晴天備忘（名站北側黃金同盟）：</strong> 豐田紀念館先去，隨後散步穿過則武之森綠地，直接進入永旺夢樂城購物。整條路線是一條平地直線，完全順路不折騰！",
-                note_rainy: "<strong>💡 雨天避雷：</strong> 豐田館與 AEON 為全室內完全免疫。下雨天僅需**放棄則武之森的戶外花園**。上午逛完豐田館後，直接用計程車2分鐘無縫平移到 AEON 室內購物與晚餐。",
-                sunny: { steps: "11,000 步", transport: "豐田紀念館 ➔ 則武之森 ➔ 永旺夢樂城", defense: "名站北側完美直線動線，最省腳力", timeline: [
-                    { time: "09:00", title: "第一站：豐田產業技術紀念館 (先去)", desc: "【⏱️ 營業時間：09:30 - 17:00 / 最後入館 16:30】<br>搭地鐵或計程車前往。全室內大型展示，欣賞紅磚老建築、豐富的汽車組裝線與互動兒童科技樂園。" },
-                    { time: "12:30", title: "第二站：則武之森公園 (晴天接續)", desc: "【⏱️ 營業時間：園區 09:00 - 18:00 / 工藝館 10:00 - 17:00】<br>從豐田館出來，直接步行穿過緊鄰的則武之森歐式紅磚公園，欣賞噴水池綠地，孩子可在此短暫跑跑。" },
-                    { time: "13:30", title: "第三站：永旺夢樂城 (Noritake Garden)", desc: "【⏱️ 營業時間：商場 10:00 - 21:00 / 餐廳 11:00 - 22:00】<br>直接平地走進商場。拍網美巨大書牆、採購日系服飾（UNIQLO、GU）與免稅藥妝。晚餐直接在商場內享用，隨後回飯店。" }
+                note_sunny: "<strong>💡 晴天備忘（名站北側區域）：</strong> 豐田紀念館行程結束後，步行穿過則武之森綠地即可進入永旺夢樂城，整體動線呈平地直線位移。",
+                note_rainy: "<strong>💡 雨天避雷：</strong> 豐田館與 AEON 為全室內場域，不受降雨影響。下雨時取消則武之森戶外行程，豐田館結束後以計程車接駁至 AEON 內部。",
+                sunny: { timeline: [
+                    { time: "09:30", title: "豐田產業技術紀念館 (第一站先去)", desc: "【⏱️ 營業時間：09:30 - 17:00 / 最後入館 16:30 ｜ 🚫 公休日：每週一】<br>館內展示紡織與汽車製程，設有兒童科技樂園（Technoland）。今日為週五，正常營業。", trans: "🚌 交通方式：自飯店徒步 10 分鐘至名古屋站，轉乘名鐵名古屋本線至「榮生站」下車步行 3 分鐘。" },
+                    { time: "12:30", title: "則武之森公園 (晴天接續)", desc: "【⏱️ 營業時間：園區 09:00 - 18:00 / 工藝館 10:00 - 17:00 ｜ 🚫 公休日：每週一】<br>歐式紅磚噴水池花園綠地，供孩童短暫戶外活動。", trans: "🚌 交通方式：自豐田紀念館出口平地慢步 5 分鐘，直接橫向穿過公園園區。" },
+                    { time: "13:30", title: "永旺夢樂城 (Nagoya Noritake Garden)", desc: "【⏱️ 營業時間：商場 10:00 - 21:00 / 餐廳 11:00 - 22:00 ｜ 🚫 公休日：全年無休】<br>親子複合式商場，設有網美巨大書牆與玩具反斗城。", trans: "🚌 交通方式：自則武之森綠地直接平地步入商場大樓，傍晚結束後由商場搭乘公車或慢步返回飯店。" }
                 ]},
-                rainy: { steps: "8,000 步", transport: "豐田紀念館 ➔ (小黃) ➔ 永旺夢樂城室內", defense: "❌ 現場取消則武之森戶外綠地", timeline: [
-                    { time: "09:15", title: "計程車定點出發", desc: "打車直達豐田產業技術紀念館正門，完全避開雨勢。" },
-                    { time: "09:30", title: "第一站：豐田產業技術紀念館 (絕對核心)", desc: "【⏱️ 營業時間：09:30 - 17:00】<br>全室內大館。活字機械與汽車製程不受暴雨影響，孩子在科技樂園照樣開心玩樂。" },
-                    { time: "13:00", title: "無縫切換商場", desc: "大雨放棄戶外花園，搭計程車2分鐘直接送進永旺夢樂城室內，大雨免撐傘。" },
-                    { time: "13:15", title: "第二站：永旺夢樂城全室內購物", desc: "【⏱️ 營業時間：10:00 - 21:00】<br>留在室內大採購、吃午餐。帶孩子去二樓體驗室內星空投影劇場，大雨天完全不出大樓，晚餐亦在商場內解決。" }
+                rainy: { timeline: [
+                    { time: "09:30", title: "豐田產業技術紀念館 (全室內防禦)", desc: "【⏱️ 營業時間：09:30 - 17:00 ｜ 🚫 公休日：每週一】<br>室內場館，機械與汽車製程展示均在室內進行，不受天候干擾。", trans: "🚌 交通方式：自飯店門口直接搭乘計程車約 8 分鐘直達紀念館正門。" },
+                    { time: "13:15", title: "永旺夢樂城 (Nagoya Noritake Garden)", desc: "【⏱️ 營業時間：10:00 - 21:00 ｜ 🚫 公休日：全年無休】<br>室內採購與午餐。可安排二樓 Planetarium 星空投影劇場，晚餐亦可於商場內部餐廳享用。", trans: "🚌 交通方式：自豐田紀念館門口搭乘計程車（約 2 分鐘，起步價）無縫送抵 AEON 商場室內。" }
                 ]}
             },
             3: {
-                note_sunny: "<strong>💡 晴天大眾運輸指引（南邊港區同盟）：</strong> 今日全程利用公車與電車，兼顧經濟與在地體驗。中午跨區移動需回車站轉乘地鐵，晴天步行體感良好，跟隨車站顏色指標移動即可。",
-                note_rainy: "<strong>💡 雨天避雷：</strong> 下午港區跨區移動（鐵道館➔水族館）若拉電車階梯極多且耗時，大雨天請<strong>無條件改用計程車接送（約15分鐘橫跨名港大橋）</strong>，保證孩子不淋魚感冒。",
-                sunny: { steps: "13,000 步", transport: "門口公車 ＋ 青波線 ＋ 地鐵轉乘", defense: "大眾運輸流，注意轉乘時間與孩子體力", timeline: [
-                    { time: "08:30", title: "飯店門口搭公車", desc: "出門1分鐘至「柳橋」公車站，搭乘市區公車5分鐘直達名古屋車站，省去步行耗能。" },
-                    { time: "09:00", title: "轉乘青波線火車", desc: "於名古屋站轉乘青波線，一車直達終點「金城埠頭站」（24分鐘）。" },
-                    { time: "09:30", title: "第一站：磁浮鐵道館", desc: "【⏱️ 營業時間：10:00 - 17:30 / 最後入館 17:00】<br>體驗實體磁浮列車與豐富模擬設施，中午在館內購買限量鐵路便當。" },
-                    { time: "12:45", title: "港區橫移（大眾運輸流）", desc: "搭青波線回名古屋站 ➔ 轉地鐵東山線至榮站 ➔ 轉地鐵名城線（名港線）直達「名古屋港站」。全程約55分鐘。" },
-                    { time: "13:45", title: "第二站：名古屋港水族館", desc: "【⏱️ 營業時間：09:30 - 17:30】<br>3號出口（電梯）出站，平地散步5分鐘進館。觀賞驚撼的虎鯨與海豚表演。" },
-                    { time: "17:30", title: "地鐵流返程", desc: "從名古屋港站搭名城線至榮站，轉東山線至「伏見站」。" },
-                    { time: "18:15", title: "伏見區散步晚餐", desc: "從伏見站出站，順路至飯店附近的山本屋總本家吃味噌烏龍麵，隨後慢步回飯店。" }
+                note_sunny: "<strong>💡 晴天港區高效放電：</strong> 晴天時上午去鐵道館，下午專攻戶田川兒童樂園（營業至18:00）。大須行程已移往 Day 4 中午，今日傍晚直接返回市區飯店休息，降低位移頻率。",
+                note_rainy: "<strong>💡 雨天避雷大須防線：</strong> 今日若下大雨，下午改去全室內水族館，傍晚前往加蓋的大須商店街避雨用餐。※注意：若今日去了大須，Day 4 則現場跳過。",
+                sunny: { timeline: [
+                    { time: "10:00", title: "磁浮鐵道館 (上午行程)", desc: "【⏱️ 營業時間：10:00 - 17:30 / 最後入館 17:00 ｜ 🚫 公休日：每週二】<br>參觀實體超導磁浮列車與駕駛模擬設施。今日為週六，正常營業。", trans: "🚌 交通方式：自飯店步行至名古屋站，搭乘名鐵青波線火車至終點「金城埠頭站」（24分鐘），下車步行 5 分鐘。" },
+                    { time: "13:00", title: "戶田川兒童樂園 (下午行程)", desc: "【⏱️ 營業時間：09:00 - 18:00 ｜ 🚫 公休日：每週一】<br>設有大型戶外木造攀爬機關、長溜滑梯與親水區。今日週六開放至18:00，可停留至傍晚。", trans: "🚌 交通方式：自鐵道館門口搭乘計程車（約 15 分鐘，車資約 2,800 日圓）直達樂園大門。傍晚回程自公園搭計程車（4.8公里，車資約 1,900 日圓）至地鐵東山線終點「高畑站」，轉乘地鐵回「伏見站」返回飯店。" }
                 ]},
-                rainy: { steps: "7,000 步", transport: "鐵道館 ➔ (跨港計程車) ➔ 水族館室內", defense: "❌ 暴雨改用短途高效率計程車", timeline: [
-                    { time: "08:45", title: "公車避雨出發", desc: "飯店門口搭市區公車5分鐘直達車站，轉乘青波線，完全免淋雨。" },
-                    { time: "09:30", title: "第一站：磁浮鐵道館", desc: "【⏱️ 營業時間：10:00 - 17:30】<br>完全室內空調大館，大雨完全無感。" },
-                    { time: "13:00", title: "港區橫移（高效率秘密計程車）", desc: "從鐵道館直接打車橫跨名港大橋直達水族館正門（15分鐘，車資約3500日圓），免去雨天轉火車的漫長狼狽。" },
-                    { time: "13:20", title: "第二站：名古屋港水族館", desc: "【⏱️ 營業時間：09:30 - 17:30】<br>進入室內館區看海洋生物。結束後搭地鐵回伏見區，在飯店1樓 Royal Host 享用舒適晚餐。" }
+                rainy: { timeline: [
+                    { time: "10:00", title: "磁浮鐵道館 (上午行程)", desc: "【⏱️ 營業時間：10:00 - 17:30 ｜ 🚫 週二休】<br>全室內展區，常設火車實體展線不受降雨干擾。", trans: "🚌 交通方式：自飯店門口搭市區公車 5 分鐘至車站，轉乘青波線火車前往金城埠頭。" },
+                    { time: "13:30", title: "名古屋港水族館 (下午行程)", desc: "【⏱️ 營業時間：09:30 - 17:30 ｜ 🚫 公休日：每週一】<br>海底隧道與看台皆在室內有大棚，避雨係數高。", trans: "🚌 交通方式：自金城埠頭搭青波線回名站，轉地鐵東山線/名城線至名古屋港站。" },
+                    { time: "17:00", title: "大須觀音 ＆ 大須商店街 (傍晚避雨午餐)", desc: "【⏱️ 營業時間：10:00 - 20:00】<br>全加蓋防雨拱廊天棚。在此吃伴手禮、逛玩具與晚餐。", trans: "🚌 交通方式：地鐵名古屋港站名城線直達上前津站，無縫避雨切入商圈。" }
                 ]}
             },
             4: {
-                note_sunny: "<strong>💡 晴天備忘（名城軸線同盟）：</strong> 先去市區中央的科學館，中午過後地鐵一條線往北衝，專攻名古屋城與北側緊鄰的下水道科學館，動線完全順路不重複！",
-                note_rainy: "<strong>💡 雨天避雷：</strong> ❌ <strong>強制刪除名古屋城</strong>（外面全是泥濘碎石路且天守閣封閉）。<strong>【科學館依然保留為第一站】</strong>！下午**絕對不去重複的永旺商商場**，改去鄰近的**【大須商店街（全加蓋天棚區）】**吃特色點心、逛街，體感不重複！",
-                sunny: { steps: "13,500 步", transport: "名古屋市科學館 ➔ 名古屋城 ➔ 下水道科學館", defense: "科學館先啟動，隨後一路向北順遊古城與下水道館", timeline: [
-                    { time: "09:15", title: "第一站：名古屋市科學館 (先去)", desc: "【⏱️ 營業時間：09:30 - 17:00 / 最後入館 16:30】<br>從飯店散步5-8分鐘即可抵達。參觀金氏紀錄巨大天象儀，操作豐富科學互動機關。" },
-                    { time: "12:30", title: "地鐵一路向北 ➔ 名古屋城", desc: "從地鐵伏見站搭鶴舞線至「丸之內站」轉名城線，至「名古屋城站」下車。" },
-                    { time: "13:00", title: "第二站：名古屋城", desc: "【⏱️ 營業時間：09:00 - 16:30 / 本丸御殿最後進場 16:00】<br>晴天前往。欣賞護城河、看黃金虎鯨，進入本丸御殿欣賞頂級原木與金箔壁畫。" },
-                    { time: "15:30", title: "第三站：下水道科學館 (同區域順路)", desc: "【⏱️ 營業時間：09:30 - 16:30】<br>位於名城公園北側（走路可達）。全室內免費參觀，豐富的自來水互動機關與地板大型擬真管線，非常適合孩子。" },
-                    { time: "18:00", title: "榮商圈晚餐", desc: "搭乘地鐵名城線南下直達「榮站」，在地下街或百貨享用晚餐後回飯店。" }
+                note_sunny: "<strong>💡 晴天市區大串聯（含大須補考）：</strong> 沿伏見通一路向北。中午安排大須商店街吃午餐，萬一 Day 3 因雨去過大須，今日中午可直接彈性改去名古屋城門口的【金鯱橫丁】用餐。",
+                note_rainy: "<strong>💡 雨天互補科學館與大須聯防：</strong> 上午科學館。中午打車 3 分鐘直達大須商店街天棚避雨吃午餐。若 Day 3 已去過，今日中午可在科學館周邊用餐，下午移防下水道館。",
+                sunny: { timeline: [
+                    { time: "09:30", title: "名古屋市科學館 (上午行程)", desc: "【⏱️ 營業時間：09:30 - 17:00 / 最後入館 16:30 ｜ 🚫 每週一、每月第三個週五】<br>金氏紀錄天文儀與龍捲風裝置。今日為週日，正常營運。", trans: "🚌 交通方式：自納屋橋飯店直接散步 5-8 分鐘即可平地抵達科學館大門。" },
+                    { time: "12:30", title: "大須觀音 ＆ 大須商店街 (中午午餐小吃)", desc: "【⏱️ 營業時間：10:00 - 20:00】<br>【補考與互補機制】晴天中午固定列入。參拜大須觀音後，步入商店街內享用午餐小吃、逛玩具店與扭蛋店。", trans: "🚌 交通方式：由科學館大門沿伏見通向南平地散步 10 分鐘（約 800 公尺）即達大須觀音；亦可打車 3 分鐘（車資約 600-800 日圓）。" },
+                    { time: "15:00", title: "名古屋城 (下午第一站)", desc: "【⏱️ 營業時間：09:00 - 16:30 ｜ 🚫 12/29 - 1/1】<br>參觀江戶重建原木御殿與黃金虎鯨看台。", trans: "🚌 交通方式：自商店街上前津站搭名城線，10分鐘一車直達名古屋城站下車。" },
+                    { time: "16:30", title: "名古屋市下水道科學館 (下午第二站)", desc: "【⏱️ 營業時間：09:30 - 16:30】<br>水資源互動機關，適合孩子。結束後搭地鐵回飯店。", trans: "🚌 交通方式：城門東出口散步 4 分鐘即抵。結束後搭地鐵至飯店。" }
                 ]},
-                rainy: { steps: "8,500 步", transport: "科學館 ➔ (小黃) ➔ 大須防雨加蓋商店街", defense: "❌ 暴雨現場刪除名古屋城，且絕不重複去永旺", timeline: [
-                    { time: "09:20", title: "第一站：名古屋市科學館 (雨天頂級神陣)", desc: "【⏱️ 營業時間：09:30 - 17:00】<br>大雨天完全不影響！飯店出來慢步5分鐘（或坐車1分鐘）直接進館。在全室內狂玩六層樓的科學互動機關。" },
-                    { time: "12:30", title: "午餐時間與跨區移動", desc: "科學館旁步行或搭車至鄰近餐廳享用熱騰騰的味噌烏龍麵。" },
-                    { time: "13:30", title: "第二站：大須商店街（全加蓋防雨區 / 完美錯開商場）", desc: "【⏱️ 營業時間：各店家多為 10:00 - 20:00 依店而異】<br>搭地鐵1站或直接打車3分鐘抵達大須。直接進入<strong>全天候加蓋的巨大拱廊天棚下</strong>。帶孩子吃鯛魚燒、逛扭蛋與日本在地老街，一滴雨都淋不到，體驗不重複！" },
-                    { time: "16:00", title: "下午室內彈性備案 (下水道館 或 啤酒廠)", desc: "【下水道科學館 ⏱️ 至 16:30】/【麒麟啤酒廠 ⏱️ 依預約場次為準】<br>若還有精力，可打車前往全室內的下水道科學館或提前預約的麒麟啤酒廠避雨參觀；若孩子累了，則可提早回飯店休息。" },
-                    { time: "18:00", title: "飯店 1 樓就地晚餐", desc: "直接在飯店 1 樓 Royal Host 舒服用餐，避開外面的大暴雨。" }
+                rainy: { timeline: [
+                    { time: "09:30", title: "名古屋市科學館", desc: "【⏱️ 營業時間：09:30 - 17:00 ｜ 🚫 公休日：每週一、每月第三個週五】<br>全室內多層樓科學互動展區，下暴雨完全不影響行程品質。今日為週日，正常營業。", trans: "🚌 交通方式：自飯店慢步 5 分鐘直接進入室內館區。" },
+                    { time: "12:30", title: "大須商店街 (午餐補考)", desc: "【⏱️ 營業時間：10:00 - 20:00】<br>【雨天互補機制】今日下雨仍固定列入。直接切入全加蓋巨大拱廊天棚，在乾爽環境下享用老街午餐與遮雨逛街。", trans: "🚌 交通方式：自科學館門口搭乘計程車 3 分鐘（車資約 700 日圓），無縫送抵大須觀音本堂大屋簷下並步入老街天棚。" },
+                    { time: "14:30", title: "下水道科學館 (或 預約之工廠備案 - 下午行程)", desc: "【下水道科學館 ⏱️ 09:30 - 16:30 / 🚫 週一休】<br>【麒麟啤酒廠 ⏱️ 依預約時段 / 🚫 週一休】<br>移防至全室內特定場館（不重複前往永旺商場）。兩館今日週日皆正常開館。", trans: "🚌 交通方式：自大須商店街口搭乘計程車定點接送，前往全室內下水道科學館，或移防至清須市之麒麟啤酒工廠（車資另計）。傍晚搭車回飯店。" }
                 ]}
             },
             5: {
-                note_sunny: "<strong>💡 最後一天黃金動線：</strong> 中午辦理退房並攜帶行李，直接搭 μ-SKY 衝往機場。因為最強的**【波音航空博物館】**就在機場內，大行李直接托運後，全家空手進去大飛機光影世界玩到登機！",
-                note_rainy: "<strong>💡 雨天備忘：</strong> 機場航廈與波音博物館全程有室內電動步道天橋相連，雨天完全免撐傘。行李直接在航廈辦理托運或寄存，防雨與舒適度高達100%。",
-                sunny: { steps: "9,500 步", transport: "μ-SKY 特急 ➔ 機場波音飛行博物館", defense: "完美利用航廈空間，大人小孩都輕鬆", timeline: [
-                    { time: "11:30", title: "飯店退房 ＆ 計程車去車站", desc: "在飯店打包完畢辦理退房，搭計程車5分鐘直達名鐵名古屋站（避開公車擠行李箱）。" },
-                    { time: "12:20", title: "搭乘 μ-SKY 特急狂飆機場", desc: "全車對號座，28分鐘直達中部國際機場 T1。" },
-                    { time: "13:00", title: "行李托運 / 寄存", desc: "抵達機場航廈。先至星宇航空櫃檯辦理行李托運，全家立刻輕裝化。" },
-                    { time: "13:30", title: "重磅亮點：Flight of Dreams 波音博物館", desc: "【⏱️ 營業時間：10:00 - 17:00 / 一樓餐飲區至 20:00】<br>位於機場內（走室內連通步道）。近距離觀賞真實波音 787 飛機、體驗室內聲光大秀。一樓設有美式風格飲食街，可在此一邊看飛機一邊享用午餐。" },
-                    { time: "17:30", title: "返回 T1 航廈 ＆ 晚餐", desc: "走回 T1 航廈 4 樓藍天城商店街，享用最後的名古屋名物（蝦餅、雞翅），隨後辦理出境，19:55 搭乘星宇航空返台。" }
+                note_sunny: "<strong>💡 晴天備忘：</strong> 中午退房後直接攜帶行李搭特急前往機場，置物櫃輕裝化，全家衝波音博物館玩到開櫃托運。",
+                note_rainy: "<strong>💡 雨天備忘：</strong> 機場大樓與波音博物館全程有高空遮蔽電動連通天橋，免撐傘，舒適度100%，行李寄存至置物櫃安全無虞。",
+                sunny: { timeline: [
+                    { time: "09:30", title: "柳橋中央市場", desc: "【⏱️ 營業時間：一般多營運至 10:00 - 11:00 前後 ｜ 🚫 週日多公休】<br>今日為週一，市場正常營運。飯店慢步 5 分鐘抵達。參觀名古屋人的廚房，感受日系市場氛圍。", trans: "🚖 交通方式：自納屋橋里士滿飯店徒步 500 公尺即達大門。結束後步行 3 分鐘抵達名古屋車站。" },
+                    { time: "11:30", title: "名古屋車站 & 享用午餐", desc: "於車站百貨樓上（名鐵、近鐵百貨）吃最後的名古屋飯伴手禮大採購，準備搭車移防。", trans: "🚖 交通方式：名古屋站辦理置物櫃行李處理。搭乘 12:20 的 μ-SKY，28分鐘達機場 T1。" },
+                    { time: "13:30", title: "Flight of Dreams 波音博物館", desc: "【⏱️ 營業時間：10:00 - 17:00 / 一樓餐飲區至 20:00】<br>機場內（全程走室內電動步道）。近距離看飛機、吃美式餐飲放放空。", trans: "🚖 交通方式：T1 航廈寄存行李後，走室內遮蔽步道天橋 步行 8 分鐘抵達。" },
+                    { time: "17:00", title: "星宇航空櫃檯托運", desc: "開櫃後領取行李托運，準備搭乘 19:55 返台。", trans: "🚖 交通方式：櫃檯托運後，直接走室內通道前往登機口。" }
                 ]},
-                rainy: { steps: "9,500 步", transport: "μ-SKY 特急 ➔ 機場波音飛行博物館", defense: "全程室內連通，100%不受雨天影響", timeline: [
-                    { time: "11:30", title: "飯店退房 ＆ 計程車去車站", desc: "外面大雨，強制搭計程車5分鐘直達車站，大行李箱一滴雨都不淋。" },
-                    { time: "12:20", title: "搭乘 μ-SKY 特急狂飆機場", desc: "大樓內直接上火車，28分鐘將全家與行李安全送抵機場車站。" },
-                    { time: "13:00", title: "行李托運 / 機場室內移防", desc: "抵達機場。辦理完行李托運後，全程走高空室內防雨聯絡天橋，前往波音博物館。" },
-                    { time: "13:30", title: "重磅亮點：Flight of Dreams 波音博物館", desc: "【⏱️ 營業時間：10:00 - 17:00】<br>完全室內巨型展機空間。不受暴雨干擾，孩子在室內看飛機燈光秀、攀爬室內遊樂設施，爸媽在室內美式商場放空。" },
-                    { time: "17:30", title: "返回 T1 航廈 ＆ 晚餐", desc: "走室內步道回 T1 航廈 4 樓，吃晚餐、買最後的免稅伴手禮，19:55 搭機回台。" }
+                rainy: { timeline: [
+                    { time: "09:30", title: "柳橋中央市場", desc: "【⏱️ 營業時間：一般至 10:30-11:00 ｜ 🚫 週日定休】<br>雨中補考市場。由納屋橋散步 5 分鐘（稍稍撐傘）進入市場室內。今日週一正常營業。", trans: "🚖 交通方式：飯店出來徒步 500 公尺進入市場室內遮蔽區。" },
+                    { time: "11:30", title: "車站大樓用餐 & 特急移防", desc: "車站大樓用餐、輕裝伴手禮。12:20 特急衝往機場大樓。", trans: "🚖 交通方式：外面大雨，計程車 5 分鐘送至名鐵站。μ-SKY 特急列車 28 分鐘直達機場 T1。" },
+                    { time: "13:30", title: "Flight of Dreams 波音博物館", desc: "【⏱️ 營業時間：10:00 - 17:00】<br>完全室內巨型展機空間。不受暴雨影響，孩子在室內放電看燈光秀。", trans: "🚖 交通方式：全程走高空遮蔽電動步道天橋移防至博物館區，一滴雨都淋不到。" },
+                    { time: "17:00", title: "櫃檯托運 ＆ 航廈免稅採購", desc: "回 T1 領取行李托運，在機場 T1 四樓吃伴手禮（蝦餅、雞翅等），19:55 搭機回台。", trans: "🚖 交通方式：走室內步道返回 T1 航廈中央櫃檯。" }
                 ]}
             }
         }
@@ -222,9 +193,6 @@
         const dayData = data.days[currentDay];
         const config = dayData[currentWeather];
 
-        document.getElementById('kpi-steps').innerText = config.steps;
-        document.getElementById('kpi-transport').innerText = config.transport;
-        document.getElementById('kpi-defense').innerText = config.defense;
         document.getElementById('note-container').innerHTML = dayData[`note_${currentWeather}`];
 
         const container = document.getElementById('timeline-container');
@@ -235,7 +203,10 @@
             itemDiv.innerHTML = `
                 <div class="timeline-time">${item.time}</div>
                 <div class="timeline-title">${item.title}</div>
-                <div class="timeline-desc ${currentWeather === 'sunny' ? 'bg-sunny-desc' : 'bg-rainy-desc'}">${item.desc}</div>
+                <div class="timeline-desc ${currentWeather === 'sunny' ? 'bg-sunny-desc' : 'bg-rainy-desc'}">
+                    <div>${item.desc}</div>
+                    <div class="trans-box">${item.trans}</div>
+                </div>
             `;
             container.appendChild(itemDiv);
         });
